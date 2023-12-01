@@ -1,0 +1,19 @@
+beautifulsoup4 @ file:///home/conda/feedstock_root/build_artifacts/beautifulsoup4_1680888073205/work
+Bottleneck @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/bottleneck_1699550558423/work
+joblib @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/joblib_1699481664681/work
+mkl-fft @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/mkl_fft_1699473528480/work
+mkl-random @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/mkl_random_1699473588250/work
+mkl-service==2.4.0
+numexpr @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/numexpr_1699503421264/work
+numpy @ file:///C:/b/abs_7267ja_mqz/croot/numpy_and_numpy_base_1701295083047/work/dist/numpy-1.26.2-cp312-cp312-win_amd64.whl#sha256=4b4847df2ee55604c39333b62bd96a155cb1ca28439fdf1adff604e1e94d82ae
+pandas @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/pandas_1699559422843/work/dist/pandas-2.1.1-cp312-cp312-win_amd64.whl#sha256=abe40ba689d040c1bc086ed09a5d2657125db5ec53967f687552833f0c115061
+python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
+pytz @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/pytz_1699475334900/work
+scikit-learn @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/scikit-learn_1699496316170/work
+scipy @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/scipy_1699494946351/work/dist/scipy-1.11.3-cp312-cp312-win_amd64.whl#sha256=e55200dbad5ccc0f329d5200e4f3619aa99e558927f65e1f77f70d19831c9b91
+setuptools==68.0.0
+six @ file:///tmp/build/80754af9/six_1644875935023/work
+soupsieve @ file:///home/conda/feedstock_root/build_artifacts/soupsieve_1693929250441/work
+threadpoolctl @ file:///Users/ktietz/demo/mc3/conda-bld/threadpoolctl_1629802263681/work
+tzdata @ file:///croot/python-tzdata_1690578112552/work
+wheel==0.41.2
