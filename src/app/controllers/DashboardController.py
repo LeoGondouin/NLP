@@ -4,6 +4,10 @@ from dash import html
 from server import app
 from views.dashboard.descriptive_statistics import statistics
 from views.dashboard.corpus_analysis import corpus_analysis
+import requests 
+
+
+cube = requests.post("http://localhost:8002/get/offers")
 
 @app.callback(
     Output('screen-menu','children',allow_duplicate = True),

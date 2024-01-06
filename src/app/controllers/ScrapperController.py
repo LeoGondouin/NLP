@@ -4,7 +4,7 @@ from views.scrapper.scrapper import scrapper_screen
 import time
 import dash_core_components as dcc
 import threading
-from api.scrapper.functions import scrapCorpus
+import requests
 
 @app.callback(
     Output('screen-menu','children',allow_duplicate=True),
@@ -44,6 +44,31 @@ def simulate_delay(callback):
 )        
 def scrapOutput(keywords,nbDocs,websites,n_clicks):
     if n_clicks is not None:
-        corpus = scrapCorpus(websites,keywords,nbDocs)
-        print(corpus)
+        url = 'http://localhost:8001/scrap/offers'
+
+        data = {
+            'keywords':keywords,
+            'nbDocs':nbDocs,
+            'websites':websites,
+        }
+
+        response = requests.post(url, json=data)
+
+        # Check the response
+        if response.status_code == 200:
+            print('Scrappage réussi')
+            corpus = response.json()
+        else:
+            print(f'POST request failed with status code: {response.status_code}')
+            print('Response:', response.text)
+
+        url = 'http://localhost:8002/insert/offers'
+
+        response = requests.post(url, json=data)
+
+        if response.status_code == 200:
+            print('Insertion en base de données réussie')
+        else:
+            print(f'POST request failed with status code: {response.status_code}')
+            print('Response:', response.text)
 
