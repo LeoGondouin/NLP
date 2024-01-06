@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  dash:
+    build: ./app
+    ports:
+      - "5000:5000"
+
+  scrapper-api:
+    build:
+      context: ./api/scrapper
+    ports:
+      - "5001:8000"
+
+  fastapi2:
+    build:
+      context: ./api/db
+    ports:
+      - "5002:8000"
