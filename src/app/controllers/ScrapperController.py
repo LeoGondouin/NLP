@@ -44,7 +44,7 @@ def simulate_delay(callback):
 )        
 def scrapOutput(keywords,nbDocs,websites,n_clicks):
     if n_clicks is not None:
-        url = 'http://localhost:8001/scrap/offers'
+        url = 'http://localhost:5001/scrap/offers'
 
         data = {
             'keywords':keywords,
@@ -53,7 +53,7 @@ def scrapOutput(keywords,nbDocs,websites,n_clicks):
         }
 
         response = requests.post(url, json=data)
-
+        corpus = list()
         # Check the response
         if response.status_code == 200:
             print('Scrappage réussi')
@@ -64,7 +64,7 @@ def scrapOutput(keywords,nbDocs,websites,n_clicks):
 
         url = 'http://localhost:8002/insert/offers'
 
-        response = requests.post(url, json=data)
+        response = requests.post(url, json=corpus)
 
         if response.status_code == 200:
             print('Insertion en base de données réussie')

@@ -1,4 +1,4 @@
-from api.models import *
+from models import *
 from sqlalchemy import create_engine,text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError

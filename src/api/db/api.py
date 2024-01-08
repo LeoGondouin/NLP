@@ -1,13 +1,12 @@
 from fastapi import FastAPI
-from src.api.models import *
 from functions import fillDW,getCube
-from typing import List
+from typing import List,Dict,Any
 
 app = FastAPI()
 
 
 @app.post("/insert/offers")
-async def insertJobOffers(corpus: List(dict)):
+async def insertJobOffers(corpus: List[Dict[str, Any]]):
     fillDW(corpus)
 
 @app.get("/get/offers")

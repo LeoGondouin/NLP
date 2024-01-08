@@ -1,0 +1,6 @@
+fastapi
+scikit-learn
+spacy
+nltk
+beautifulsoup4
+selenium==4.1.0

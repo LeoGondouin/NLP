@@ -7,7 +7,7 @@ from views.dashboard.corpus_analysis import corpus_analysis
 import requests 
 
 
-cube = requests.post("http://localhost:8002/get/offers")
+# cube = requests.get("http://db_api:5002/get/offers")
 
 @app.callback(
     Output('screen-menu','children',allow_duplicate = True),

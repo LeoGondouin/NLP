@@ -1,19 +1,55 @@
 version: '3'
-
 services:
-  dash:
-    build: ./app
-    ports:
-      - "5000:5000"
-
-  scrapper-api:
+  dash_app:
     build:
-      context: ./api/scrapper
+      context: ./app
     ports:
-      - "5001:8000"
+      - "8050:8050"
+    depends_on:
+      - scraping_api
+      - db_api
 
-  fastapi2:
+  scraping_api:
     build:
-      context: ./api/db
+      context: ./api
+      dockerfile: ./scraper/Dockerfile
     ports:
-      - "5002:8000"
+      - "5001:5001"
+
+  db_api:
+    build:
+      context: ./api
+      dockerfile: ./db/Dockerfile
+    ports:
+      - "5555:5555"
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=
+      - DB_DATABASE=job_scrapping
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: job_scrapping
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./assets/db_structure/job_scrapping.sql:/docker-entrypoint-initdb.d/job_scrapping.sql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+
+
+
+
+

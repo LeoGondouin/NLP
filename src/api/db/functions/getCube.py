@@ -1,6 +1,6 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from api.models import *
+from models import *
 import pandas as pd
 
 def getCube():
