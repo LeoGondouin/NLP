@@ -18,4 +18,4 @@ EXPOSE 5001
 ENV NAME scraping_api
 
 # Run api.py when the container launches
-CMD ["python", "api.py"]
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "5001"]

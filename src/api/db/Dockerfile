@@ -18,4 +18,4 @@ EXPOSE 5002
 ENV NAME db_api
 
 # Run api.py when the container launches
-CMD ["python", "api.py"]
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "5002"]

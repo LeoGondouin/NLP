@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from functions import fillDW,getCube
+from functions.fillDW import fillDW
+from functions.getCube import getCube
 from typing import List,Dict,Any
 
 app = FastAPI()

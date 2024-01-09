@@ -6,7 +6,7 @@ from datetime import datetime
 
 #Alimentation du DW
 def fillDW(corpus):
-    engine = create_engine('mysql+mysqlconnector://root:@localhost/job_scrapping')
+    engine = create_engine('mysql+mysqlconnector://root:@localhost:3336/job_scrapping')
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     duplicates = False
