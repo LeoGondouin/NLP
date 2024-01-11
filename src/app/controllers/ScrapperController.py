@@ -24,11 +24,11 @@ def display(n_clicks):
 def displayReminder(keyword,nbDocs,websites):
     if keyword is not None and nbDocs is not None and websites is not None:
         return [
-            "Vous allez lancer un Web Scrapping sur les sites : ",
-            html.Span(children=', '.join(websites), style={"font-weight": "bold"}),
-            " qui va retourner environ : ",
+            "You will start a Web Scrap on the following websites : ",
+            html.Span(children=', '.join([item.capitalize() for item in websites]), style={"font-weight": "bold"}),
+            " which will return approximately ",
             html.Span(children=int(nbDocs) * len(websites), style={"font-weight": "bold"}),
-            " documents sur le thème : ",
+            " documents on the keyword : ",
             html.Span(children=keyword, style={"font-weight": "bold"})
         ]
 

@@ -23,6 +23,5 @@ def scrapCorpus(websites,keywords,nb_docs):
     
     if 'welcometothejungle' in websites:
         corpus.extend(scrapWTTJ(keywords,nb_docs))
-
-    print(set([item["source"] for item in corpus]))
+        
     return corpus

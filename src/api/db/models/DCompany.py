@@ -5,4 +5,4 @@ from .base import Base
 class DCompany(Base):
     __tablename__ = 'd_company'
     id = Column(Integer, primary_key=True)
-    label = Column(String)
+    company = Column(String)

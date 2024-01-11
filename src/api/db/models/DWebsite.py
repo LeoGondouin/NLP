@@ -5,5 +5,5 @@ from .base import Base
 class DWebsite(Base):
     __tablename__ = 'd_website'
     id = Column(Integer, primary_key=True)
-    label = Column(String)
+    website = Column(String)
     link = Column(String)

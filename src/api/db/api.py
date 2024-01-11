@@ -11,6 +11,7 @@ async def insertJobOffers(request: Request, data: dict):
     fillDW(data["corpus"])
 
 @app.get("/get/offers")
-async def getJobOffers():
-    cube = getCube()
+async def getJobOffers(criterias: str):
+    print(criterias)
+    cube = getCube(criterias)
     return cube

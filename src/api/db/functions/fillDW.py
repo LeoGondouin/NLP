@@ -39,8 +39,8 @@ def fillDW(corpus):
         
         # position_type = HPositionType(position_type=corpus_position_type)
         position = DPosition(position=corpus_position)
-        website = DWebsite(label=corpus_website,link=corpus_link)
-        company = DCompany(label=corpus_company)
+        website = DWebsite(website=corpus_website,link=corpus_link)
+        company = DCompany(company=corpus_company)
         city = DCity(city=corpus_city)
         contract_type = DContractType(contract_type=corpus_contract_type)
         session = Session()
@@ -48,8 +48,8 @@ def fillDW(corpus):
         # Recherche des élements de chaque dimensions pour éviter les doublons
         # existing_position_type = session.query(HPositionType).filter_by(position_type=corpus_position_type).first()
         existing_position = session.query(DPosition).filter_by(position=corpus_position).first()
-        existing_website = session.query(DWebsite).filter_by(label=corpus_website).first()
-        existing_company = session.query(DCompany).filter_by(label=corpus_company).first()
+        existing_website = session.query(DWebsite).filter_by(website=corpus_website).first()
+        existing_company = session.query(DCompany).filter_by(company=corpus_company).first()
         existing_city = session.query(DCity).filter_by(city=corpus_city).first()
         existing_contract_type = session.query(DContractType).filter_by(contract_type=corpus_contract_type).first()
 

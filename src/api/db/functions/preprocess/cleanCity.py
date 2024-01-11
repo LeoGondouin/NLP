@@ -3,7 +3,8 @@ import re
 def cleanCity(workplace):
     # Replace "cedex" with an empty string
     workplace = workplace.replace("cedex", '')
-
+    workplace = workplace.replace("CEDEX", '')
+    workplace = workplace.replace("\u2026","")
     # Remove digits
     workplace = re.sub(r'\d+', '', workplace)
 
