@@ -26,7 +26,6 @@ scrapper_screen = html.Div(
                      style={'width': '100%', 'margin-bottom': '15px'}),
         
         html.Div([
-            html.Label("Preview: "),
             html.Span(id="span-preview", style={'margin-right': '10px'}),
         ], style={'margin-bottom': '15px'}),
         

@@ -7,13 +7,17 @@ from selenium.webdriver.support.ui import WebDriverWait,Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
-from functions.preprocess import getCleanText,getOccurences
+from functions.preprocess.getCleanText import getCleanText
+from functions.preprocess.getOccurences import getOccurences
+from functions.preprocess.getOccurences import getOccurences
 
 def scrapApec(keywords,nb_docs):
         pages = math.ceil(nb_docs/20)
         source = "apec"
-        service = ChromeService("C:/Users/leogo/Documents/chromedriver-win64/chromedriver-win64/chromedriver.exe")
-        driver = webdriver.Chrome(service=service)
+
+        remote_url = "http://selenium_chrome:4444/wd/hub"
+        driver = webdriver.Remote(command_executor=remote_url, desired_capabilities=webdriver.DesiredCapabilities.CHROME)
+
         rootLink = "https://www.apec.fr"
         corpus = list()
         try:
@@ -78,15 +82,14 @@ def scrapApec(keywords,nb_docs):
 
                             # Example: Retrieve the text of a specific element
                             desc = soup.select("h4:contains('Descriptif du poste') + p")
-                            descText = [" ".join(elem.text) for elem in desc][0]
+                            descText = ["".join(elem.text) for elem in desc][0]
 
                             profile = soup.select("h4:contains('Profil recherché') + p")
-                            profileText = [" ".join(elem.text) for elem in profile][0]                  
+                            profileText = ["".join(elem.text) for elem in profile][0]                  
 
                             position = soup.select_one("h4:contains('Métier') + span").text
                             position_type = soup.select_one('h4:contains("Secteur d’activité du poste")+span').text
                             long_infos = " ".join([descText,profileText])
-                            long_infos = getCleanText(long_infos)
                             long_infos = getOccurences(long_infos)
                             corpus.append({"source":source,"link":rootLink,"position":position,"position_type":position_type,"company":company,"workplace":workplace,"published_date":published_date,"contract_type":contract_type,"description":long_infos})
                         except Exception as e:
@@ -103,3 +106,4 @@ def scrapApec(keywords,nb_docs):
 
         finally:
             driver.quit()
+            return corpus

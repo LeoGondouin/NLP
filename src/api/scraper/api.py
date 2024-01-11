@@ -1,21 +1,23 @@
 from fastapi import FastAPI,Request,HTTPException
-from functions import scrapCorpus
+from functions.scrapCorpus import scrapCorpus
+from fastapi.responses import JSONResponse
+import json
 
 app = FastAPI()
 
 @app.post("/scrap/offers")
-async def scrapCorpus(request: Request):
+async def scrap_offers(request: Request, data: dict):  # Receive data as a dictionary
     try:
-        json_data = await request.json()
+        # Access specific items within the dictionary
+        keywords = data.get("keywords")
+        websites = data.get("websites")
+        nb_docs = data.get("nb_docs")
 
-        # Access specific items within the JSON data
-        keywords = json_data.get("keywords")
-        websites = json_data.get("websites")
-        nb_docs = json_data.get("nb_docs")
+        # Replace this with your actual scraping logic
+        scraped_corpus = scrapCorpus(websites, keywords, nb_docs)
 
-        corpus = scrapCorpus(websites,keywords,nb_docs)
-        return corpus
+        return JSONResponse(content=json.dumps({"status": "done", "corpus": scraped_corpus}), status_code=200)
 
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Invalid JSON data: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Error processing request: {str(e)}")
 

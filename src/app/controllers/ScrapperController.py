@@ -5,6 +5,7 @@ import time
 import dash_core_components as dcc
 import threading
 import requests
+import json
 
 @app.callback(
     Output('screen-menu','children',allow_duplicate=True),
@@ -15,12 +16,12 @@ def display(n_clicks):
         return scrapper_screen
     
 @app.callback(
-    Output('span-preview','children'),
+    Output('span-preview','children',allow_duplicate=True),
     Input('txt-keyword','value'),
     Input('cb-nbdocs','value'),
     Input('cb-website','value'),
 )    
-def display_reminder(keyword,nbDocs,websites):
+def displayReminder(keyword,nbDocs,websites):
     if keyword is not None and nbDocs is not None and websites is not None:
         return [
             "Vous allez lancer un Web Scrapping sur les sites : ",
@@ -36,24 +37,30 @@ def simulate_delay(callback):
     callback()
 
 @app.callback(
-    Output('loading-placeholder', 'children'),
+    Output('span-preview', 'children',allow_duplicate=True),
     State('txt-keyword','value'),
     State('cb-nbdocs','value'),
     State('cb-website','value'),
     Input('btn-scrap','n_clicks'),
 )        
-def scrapOutput(keywords,nbDocs,websites,n_clicks):
+def scrapOutput(keywords, nbDocs, websites, n_clicks):
     if n_clicks is not None:
-        url = 'http://localhost:5001/scrap/offers'
+        url = 'http://scraping_api:5001/scrap/offers'
 
         data = {
-            'keywords':keywords,
-            'nbDocs':nbDocs,
-            'websites':websites,
+            'keywords': keywords,
+            'nb_docs': nbDocs,
+            'websites': websites,
         }
 
-        response = requests.post(url, json=data)
+        headers = {'Content-Type': 'application/json'}  # Set content type to JSON
+
+        response = requests.post(url, json=data, headers=headers)  # Send data as JSON in the request body
         corpus = list()
+
+        isScrapped = True
+        isInserted = True
+
         # Check the response
         if response.status_code == 200:
             print('Scrappage réussi')
@@ -61,14 +68,29 @@ def scrapOutput(keywords,nbDocs,websites,n_clicks):
         else:
             print(f'POST request failed with status code: {response.status_code}')
             print('Response:', response.text)
+            isScrapped = False
 
-        url = 'http://localhost:8002/insert/offers'
+        url = 'http://db_api:5002/insert/offers'
 
-        response = requests.post(url, json=corpus)
+        response = requests.post(url, json=json.loads(corpus),headers=headers)
 
         if response.status_code == 200:
             print('Insertion en base de données réussie')
         else:
             print(f'POST request failed with status code: {response.status_code}')
             print('Response:', response.text)
+            isInserted = False
+
+        strResponse = ""
+        if not(isScrapped):
+            strResponse = "ERROR : Job scrapping failed"
+        elif not(isInserted):
+            strResponse = "ERROR : Corpus saving failed"
+        else:
+            strResponse = "SUCCESS : Corpus saved !"
+            
+        return strResponse
+        
+        
+
 

@@ -1,4 +1,8 @@
-from functions.sub_functions import scrapApec,scrapET,scrapHW,scrapPE,scrapWTTJ
+from functions.sub_functions.scrapApec import scrapApec
+from functions.sub_functions.scrapET import scrapET
+from functions.sub_functions.scrapHW import scrapHW
+from functions.sub_functions.scrapPE import scrapPE
+from functions.sub_functions.scrapWTTJ import scrapWTTJ
 
 
 def scrapCorpus(websites,keywords,nb_docs):
@@ -17,7 +21,8 @@ def scrapCorpus(websites,keywords,nb_docs):
     if 'pole-emploi' in websites:
         corpus.extend(scrapPE(keywords,nb_docs))
     
-    if 'welcometothejungle':
+    if 'welcometothejungle' in websites:
         corpus.extend(scrapWTTJ(keywords,nb_docs))
-    
+
+    print(set([item["source"] for item in corpus]))
     return corpus

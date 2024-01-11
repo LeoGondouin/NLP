@@ -1,9 +1,10 @@
 import math
-from functions.preprocess import getCleanText,getOccurences
+from functions.preprocess.getCleanText import getCleanText
+from functions.preprocess.getOccurences import getOccurences
 import requests 
 from bs4 import BeautifulSoup
 
-def scrapApec(keywords,nb_docs):
+def scrapET(keywords,nb_docs):
     source = ""
     position = ""
     company = ""
@@ -49,3 +50,4 @@ def scrapApec(keywords,nb_docs):
             "contract_type": contract_type, "description": long_infos}
         
         corpus.append(current_offer)
+    return corpus

@@ -7,6 +7,8 @@ WORKDIR /app
 # Copy the requirements file into the container at /app
 COPY ./scraper/requirements.txt /app/
 RUN pip install -r requirements.txt
+RUN python -m spacy download fr_core_news_sm
+RUN python -m nltk.downloader stopwords
 
 # Copy the current directory contents into the container at /app
 COPY ./scraper /app

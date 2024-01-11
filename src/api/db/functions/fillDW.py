@@ -3,10 +3,12 @@ from sqlalchemy import create_engine,text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
+from functions.preprocess.cleanCity import cleanCity
+import pandas as pd
 
 #Alimentation du DW
 def fillDW(corpus):
-    engine = create_engine('mysql+mysqlconnector://root:@localhost:3336/job_scrapping')
+    engine = create_engine('mysql+mysqlconnector://root:@mysql:3306/job_scrapping')
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     duplicates = False
@@ -14,6 +16,7 @@ def fillDW(corpus):
     session = Session()
     session.execute(text("CALL pTruncateDW()"))
     session.commit()
+
     i=0
     #Itération sur les éléments du corpus récupérés
     for item in corpus:
@@ -21,7 +24,7 @@ def fillDW(corpus):
         corpus_website = item["source"]
         corpus_link = item["link"]
         corpus_company = item["company"]
-        corpus_city = item["workplace"]
+        corpus_city = cleanCity(item["workplace"])
         corpus_contract_type = item["contract_type"]
         corpus_published_date = item['published_date']
         corpus_nb_occurence = item['description']

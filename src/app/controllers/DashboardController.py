@@ -22,9 +22,12 @@ def display(n_clicks):
         if response.status_code == 200:
             global cube
             cube = pd.DataFrame.from_records(json.loads(response.json()))
+
             contract_type_prop = cube['contract_type'].value_counts()
             website_prop = cube['website'].value_counts()
             company_prop = cube['company'].value_counts()
+            nb_offers = cube.shape[0]
+
             descriptives_stats = [
                     html.Span(children=[
                                     html.Label(
@@ -35,7 +38,33 @@ def display(n_clicks):
                                 ]
                             ,style={"font-size":"22px"}
                             ),
-                    html.Span("Average number of words by offer",style={"padding-left":"5px"}),
+                    html.Span(children=[
+                                    html.Label(
+                                        children=str(nb_offers),
+                                        style={"font-weight":"bold"}
+                                    ),
+                                    " number of scrapped offers"
+                                ]
+                            ,style={"font-size":"22px","padding-left":"5px"}
+                            ),
+                    html.Span(children=[
+                                    html.Label(
+                                        children=str(len(website_prop.index)),
+                                        style={"font-weight":"bold"}
+                                    ),
+                                    " distinct websites count"
+                                ]
+                            ,style={"font-size":"22px","padding-left":"5px"}
+                            ),
+                    html.Span(children=[
+                                    html.Label(
+                                        children=str(len(cube["city"].unique())),
+                                        style={"font-weight":"bold"}
+                                    ),
+                                    " distinct cities count"
+                                ]
+                            ,style={"font-size":"22px","padding-left":"5px"}
+                            ),
                     html.Div(children=[
                                 html.Div([
                                     dcc.Graph(

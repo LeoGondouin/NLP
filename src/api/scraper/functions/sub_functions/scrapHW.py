@@ -7,20 +7,22 @@ from selenium.webdriver.support.ui import WebDriverWait,Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
-from functions.preprocess import getCleanText,getOccurences
+from functions.preprocess.getCleanText import getCleanText
+from functions.preprocess.getOccurences import getOccurences
 
 def scrapHW(keywords,nb_docs):
     pages = math.ceil(nb_docs/30)
     source = "hellowork"
     rootLink = "https://www.hellowork.com"
-    service = ChromeService("C:/Users/leogo/Documents/chromedriver-win64/chromedriver-win64/chromedriver.exe")
-    driver = webdriver.Chrome(service=service) 
+
+    remote_url = "http://selenium_chrome:4444/wd/hub"
+    driver = webdriver.Remote(command_executor=remote_url, desired_capabilities=webdriver.DesiredCapabilities.CHROME)
+
     corpus = list()
     
     try:
         for page in range(pages):    
             try:
-                print(page)
                 driver.get(f'{rootLink}/fr-fr/emploi/recherche.html?k={keywords}&k_autocomplete=&l=France&l_autocomplete=&p={page+1}')
                 # Initial find of elements
                 try:
@@ -122,9 +124,9 @@ def scrapHW(keywords,nb_docs):
                     finally:
                         # Navigate back to the main page
                         driver.execute_script("window.history.go(-1);")
-
             except Exception as e:
                 # Print the exception for debugging purposes
                 print(f"Error: {e}")
     finally:
         driver.quit()
+        return corpus

@@ -7,14 +7,17 @@ from selenium.webdriver.support.ui import WebDriverWait,Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException,NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
-from functions.preprocess import getCleanText,getOccurences
+from functions.preprocess.getCleanText import getCleanText
+from functions.preprocess.getOccurences import getOccurences
 from datetime import datetime
 
 def scrapWTTJ(keywords,nb_docs):
     source = "welcometothejungle"
     rootLink = "https://www.welcometothejungle.com"
-    service = ChromeService("C:/Users/leogo/Documents/chromedriver-win64/chromedriver-win64/chromedriver.exe")
-    driver = webdriver.Chrome(service=service)
+
+    remote_url = "http://selenium_chrome:4444/wd/hub"
+    driver = webdriver.Remote(command_executor=remote_url, desired_capabilities=webdriver.DesiredCapabilities.CHROME)
+
     pages = math.ceil(nb_docs/30)
     corpus = list()
     
@@ -24,7 +27,7 @@ def scrapWTTJ(keywords,nb_docs):
                 driver.get(f'{rootLink}/fr/jobs?query={keywords}&aroundQuery=France&page={page}')
                 # Initial find of elements
                 try:
-                    accept_cookies_button = WebDriverWait(driver, 10).until(
+                    accept_cookies_button = WebDriverWait(driver, 20).until(
                         EC.element_to_be_clickable((By.CSS_SELECTOR, 'button#axeptio_btn_acceptAll'))
                     )
 
@@ -150,3 +153,4 @@ def scrapWTTJ(keywords,nb_docs):
                 print(f"Error: {e}")
     finally:
         driver.quit()
+        return corpus
