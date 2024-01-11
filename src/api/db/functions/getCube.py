@@ -25,7 +25,8 @@ def getCube(filter_criterias):
             DPosition.position,
             DWebsite.website,
             DWebsite.link,
-            DCity.city,
+            DLocation.city,
+            DLocation.city_coords,
             DCompany.company,
             DCalendar.date,
             DCalendar.day,
@@ -35,7 +36,7 @@ def getCube(filter_criterias):
         .join(DContractType)
         .join(DPosition)
         .join(DWebsite)
-        .join(DCity)
+        .join(DLocation)
         .join(DCompany)
         .join(DCalendar)      
         .filter(
@@ -58,6 +59,7 @@ def getCube(filter_criterias):
             'published_month_int': row.month,
             'published_month': calendar.month_name[row.month],
             'published_year': row.year,
+            'coords': row.city_coords,
         }
         for row in joined_data
     ])

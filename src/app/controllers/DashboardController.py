@@ -9,6 +9,7 @@ import pandas as pd
 import plotly.express as px
 import json
 from datetime import datetime
+from .functions.generateDashboard import generateDashboard
 
 cube = None
 
@@ -23,16 +24,13 @@ def display(n_clicks):
             global cube
             cube = pd.DataFrame.from_records(json.loads(response.json()))
 
-            contract_type_prop = cube['contract_type'].value_counts()
-            website_prop = cube['website'].value_counts()
-            company_prop = cube['company'].value_counts()
-            nb_offers = cube.shape[0]
+            graphs = generateDashboard(cube)
 
             filters = html.Div(
                  children = [
-                        dcc.Dropdown(id="cb-website",options=[{'label': website.capitalize(), 'value': website} for website in website_prop.index],multi=True),
-                        dcc.Dropdown(id="cb-contract-type",options=[{'label': contract_type, 'value': contract_type} for contract_type in contract_type_prop.index],multi=True),
-                        dcc.Dropdown(id="cb-company",options=[{'label': company, 'value': company} for company in company_prop.index],multi=True),
+                        dcc.Dropdown(id="cb-website",options=[{'label': website.capitalize(), 'value': website} for website in cube["website"].unique()],multi=True),
+                        dcc.Dropdown(id="cb-contract-type",options=[{'label': contract_type, 'value': contract_type} for contract_type in cube["contract_type"].unique()],multi=True),
+                        dcc.Dropdown(id="cb-company",options=[{'label': company, 'value': company} for company in cube["company"].unique()],multi=True),
                         html.Div(
                             id="div-calendar-hierarchy",
                             children=[
@@ -56,79 +54,71 @@ def display(n_clicks):
 
             descriptives_stats = [
                     filters,
-                    html.Span(children=[
-                                    html.Label(
-                                        children=str(len(company_prop.index)),
-                                        style={"font-weight":"bold"}
-                                    ),
-                                    " distinct count of companies"
-                                ]
-                            ,style={"font-size":"22px"}
-                            ),
-                    html.Span(children=[
-                                    html.Label(
-                                        children=str(nb_offers),
-                                        style={"font-weight":"bold"}
-                                    ),
-                                    " number of scrapped offers"
-                                ]
-                            ,style={"font-size":"22px","padding-left":"5px"}
-                            ),
-                    html.Span(children=[
-                                    html.Label(
-                                        children=str(len(website_prop.index)),
-                                        style={"font-weight":"bold"}
-                                    ),
-                                    " distinct websites count"
-                                ]
-                            ,style={"font-size":"22px","padding-left":"5px"}
-                            ),
-                    html.Span(children=[
-                                    html.Label(
-                                        children=str(len(cube["city"].unique())),
-                                        style={"font-weight":"bold"}
-                                    ),
-                                    " distinct cities count"
-                                ]
-                            ,style={"font-size":"22px","padding-left":"5px"}
-                            ),
+                    # html.Span(children=[
+                    #                 html.Label(
+                    #                     children=str(len(company_prop.index)),
+                    #                     style={"font-weight":"bold"}
+                    #                 ),
+                    #                 " distinct count of companies"
+                    #             ]
+                    #         ,style={"font-size":"22px"}
+                    #         ),
+                    # html.Span(children=[
+                    #                 html.Label(
+                    #                     children=str(nb_offers),
+                    #                     style={"font-weight":"bold"}
+                    #                 ),
+                    #                 " number of scrapped offers"
+                    #             ]
+                    #         ,style={"font-size":"22px","padding-left":"5px"}
+                    #         ),
+                    # html.Span(children=[
+                    #                 html.Label(
+                    #                     children=str(len(website_prop.index)),
+                    #                     style={"font-weight":"bold"}
+                    #                 ),
+                    #                 " distinct websites count"
+                    #             ]
+                    #         ,style={"font-size":"22px","padding-left":"5px"}
+                    #         ),
+                    # html.Span(children=[
+                    #                 html.Label(
+                    #                     children=str(len(cube["city"].unique())),
+                    #                     style={"font-weight":"bold"}
+                    #                 ),
+                    #                 " distinct cities count"
+                    #             ]
+                    #         ,style={"font-size":"22px","padding-left":"5px"}
+                    #         ),
                     html.Div(children=[
                                 html.Div([
                                     dcc.Graph(
                                         id="pie-contract-type",
-                                        # figure=px.pie(
-                                        #     names=contract_type_prop.index, 
-                                        #     values=contract_type_prop.values, 
-                                        #     title='Distribution of Contract types'
-                                        # ),
+                                        figure=graphs["pie-contract-type"]
                                     ),
                                     dcc.Graph(
                                         id="bar-website",
-                                        # figure=px.bar(
-                                        #     x=website_prop.index, 
-                                        #     y=website_prop.values, 
-                                        #     title='Distribution of offers by websites',
-                                        #     labels={'x': 'Websites', 'y': 'Counts'}
-                                        # )
+                                        figure=graphs["bar-website"]
                                     )
                                 ]),
                                 html.Div([
                                     dcc.Graph(
-                                        id="bar-company",
-                                        # figure=px.bar(
-                                        #     x=company_prop.index, 
-                                        #     y=company_prop.values, 
-                                        #     title='Distribution of offers by companies',
-                                        #     labels={'x': 'Companies', 'y': 'Counts'}
-                                        # )
+                                        id="bar-top-5-companies",
+                                        figure=graphs["bar-top-5-companies"]
                                     )    
-                                ])   
+                                ]),
+                                html.Div([
+                                    dcc.Graph(
+                                        id="map-offers",
+                                        # figure=graphs["map-offers"]
+                                    )  
+                                ])  
                         ]
                     ,style={"display":"flex"})
             ]
         return [statistics]+descriptives_stats
     
-def getFilterQuery(url,websites,contract_types,companies):
+def getFilterQuery(url,websites,contract_types,companies,years):
     if websites:
         if len(websites)==1:
             url += f"(website='{websites[0]}')"
@@ -156,6 +146,15 @@ def getFilterQuery(url,websites,contract_types,companies):
             url += ')'
         url += ' and '
 
+    if years:
+        if len(years)==1:
+            url += f"(year='{years[0]}')"
+        else:
+            url += '('
+            url += ' or '.join([f"year='{year}'" for year in years])
+            url += ')'
+        url += ' and '
+
     if "and" in url.strip()[-3:]:
         url = url.strip()[:-4]
 
@@ -164,43 +163,28 @@ def getFilterQuery(url,websites,contract_types,companies):
 @app.callback(
     Output('bar-website','figure'),
     Output('pie-contract-type','figure'),
-    Output('bar-company','figure'),    
+    Output('bar-top-5-companies','figure'),
+    # Output('map-offers','figure'),   
     Input('btn-filter','n_clicks'),
     State('cb-website','value'),
     State('cb-contract-type','value'),
-    State('cb-company','value')
+    State('cb-company','value'),
+    State('cb-year','value')
 )
-def filter(n_clicks,websites,contract_types,companies):
+def filter(n_clicks,websites,contract_types,companies,years):
     if n_clicks is not None:
         url = "http://db_api:5002/get/offers?criterias="
 
-        fullUrl = getFilterQuery(url,websites,contract_types,companies)
+        fullUrl = getFilterQuery(url,websites,contract_types,companies,years)
 
         response = requests.get(fullUrl)
 
         if response.status_code == 200:
             cube = pd.DataFrame.from_records(json.loads(response.json()))
             if cube.shape[0]>0:
-                website_prop = cube['website'].value_counts()
-                contract_type_prop = cube['contract_type'].value_counts()
-                company_prop = cube['company'].value_counts()
-                # Check if there's data to display
-                return px.bar(
-                    x=website_prop.index,
-                    y=website_prop.values,
-                    title='Distribution of offers by websites',
-                    labels={'x': 'Websites', 'y': 'Count'}
-                ),px.pie(
-                    names=contract_type_prop.index,
-                    values=contract_type_prop.values,
-                    title='Distribution of Contract Types',
-                    labels={'x': 'Websites', 'y': 'Count'}
-                ),px.bar(
-                    x=company_prop.index[:5],
-                    y=company_prop.values[:5],
-                    title='Top 5 companies with most offers',
-                    labels={'x': 'Companies', 'y': 'Count'}
-                )
+                graphs = generateDashboard(cube)
+                return graphs["bar-website"],graphs["pie-contract-type"],graphs["bar-top-5-companies"]
+            # ,graphs["map-offers"]
             else:
                 return px.bar(
                     title='No data available',
@@ -210,30 +194,16 @@ def filter(n_clicks,websites,contract_types,companies):
                     labels={'x': 'Contract Type', 'y': 'Count'}
                 ),px.bar(
                     title='No data available',
-                    labels={'x': 'Companies', 'y': 'Count'}
+                    labels={'y': 'Companies', 'x': 'Count'},
+                    orientation="h"
                 )
 
 
     # Return an empty figure or None if conditions are not met
     if cube.shape[0]>0:
-        website_prop = cube['website'].value_counts()
-        contract_type_prop = cube['contract_type'].value_counts()
-        return px.bar(
-                x=website_prop.index,
-                y=website_prop.values,
-                title='Distribution of offers by websites',
-                labels={'x': 'Website', 'y': 'Count'}
-        ),px.pie(
-            names=contract_type_prop.index,
-            values=contract_type_prop.values,
-            title='Distribution of Contract Types',
-            labels={'x': 'Contract type', 'y': 'Count'}
-        ),px.bar(
-            x=company_prop.index[:5],
-            y=company_prop.values[:5],
-            title='Top 5 companies with most offers',
-            labels={'x': 'Companies', 'y': 'Count'}
-        )
+        graphs = generateDashboard(cube)
+        return graphs["bar-website"],graphs["pie-contract-type"],graphs["bar-top-5-companies"]
+    # ,graphs["map-offers"]
     else:
         return px.bar(
             title='No data available',
@@ -243,5 +213,6 @@ def filter(n_clicks,websites,contract_types,companies):
             labels={'x': 'Contract type', 'y': 'Counts'}
         ),px.bar(
             title='No data available',
-            labels={'x': 'Company', 'y': 'Counts'}
+            labels={'y': 'Company', 'x': 'Counts'},
+            orientation="h"
         )

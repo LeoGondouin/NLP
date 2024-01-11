@@ -30,7 +30,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `pTruncateDW` ()   BEGIN
         DELETE FROM d_website;
         DELETE FROM d_position;
    		DELETE FROM d_company;
-        DELETE FROM d_city;
+        DELETE FROM d_location;
         DELETE FROM d_contract_type;
     END$$
 
@@ -3712,28 +3712,18 @@ INSERT INTO `d_calendar` (`date`, `day`, `month`, `year`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `d_city`
+-- Table structure for table `d_location`
 --
 
-CREATE TABLE `d_city` (
+CREATE TABLE `d_location` (
   `id` int(11) NOT NULL,
-  `city` varchar(150) DEFAULT NULL
+  `city` varchar(150) DEFAULT NULL,
+  `city_coords` varchar(150) DEFAULT NULL,
+  `department` varchar(150) DEFAULT NULL,  
+  `department_coords` varchar(150) DEFAULT NULL,  
+  `region` varchar(150) DEFAULT NULL,  
+  `region_coords` varchar(150) DEFAULT NULL 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `d_city`
---
-
-INSERT INTO `d_city` (`id`, `city`) VALUES
-(2421, 'Lille cedex'),
-(2422, 'Annecy'),
-(2423, 'Chartres cedex'),
-(2424, 'Nantes - 44'),
-(2425, "Villeneuve-d\'Ascq - 59"),
-(2426, 'Lyon - 69'),
-(2427, 'Paris'),
-(2428, 'Niort'),
-(2429, 'Brest · Toulouse…');
 
 -- --------------------------------------------------------
 
@@ -3802,9 +3792,9 @@ ALTER TABLE `d_calendar`
   ADD PRIMARY KEY (`date`);
 
 --
--- Indexes for table `d_city`
+-- Indexes for table `d_location`
 --
-ALTER TABLE `d_city`
+ALTER TABLE `d_location`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -3836,9 +3826,9 @@ ALTER TABLE `d_website`
 --
 
 --
--- AUTO_INCREMENT for table `d_city`
+-- AUTO_INCREMENT for table `d_location`
 --
-ALTER TABLE `d_city`
+ALTER TABLE `d_location`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2430;
 
 --

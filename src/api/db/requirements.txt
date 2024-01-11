@@ -4,3 +4,4 @@ sqlalchemy
 pandas
 uvicorn
 mysql-connector-python
+geopy
