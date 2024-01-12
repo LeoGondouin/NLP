@@ -23,8 +23,8 @@ def display(n_clicks):
         if response.status_code == 200:
             global cube
             cube = pd.DataFrame.from_records(json.loads(response.json()))
-
-            graphs = generateDashboard(cube)
+            
+            graphs = generateDashboard(cube,'region')
 
             filters = html.Div(
                  children = [
@@ -44,7 +44,7 @@ def display(n_clicks):
                             children=[
                                 dcc.Dropdown(id="cb-region",multi=True),
                                 dcc.Dropdown(id="cb-departement",multi=True),
-                                dcc.Dropdown(id="cb-city",options=[{'label': date, 'value': date} for date in sorted(cube["city"].unique())],multi=True),
+                                dcc.Dropdown(id="cb-city",options=[{'label': city, 'value': city} for city in sorted(cube["city"].unique())],multi=True),
                             ]
                         ),
                         html.Button(id='btn-filter',children='Filter')
@@ -104,15 +104,22 @@ def display(n_clicks):
                                 html.Div([
                                     dcc.Graph(
                                         id="bar-top-5-companies",
-                                        figure=graphs["bar-top-5-companies"]
-                                    )    
-                                ]),
-                                html.Div([
-                                    dcc.Graph(
-                                        id="map-offers",
-                                        # figure=graphs["map-offers"]
-                                    )  
-                                ])  
+                                        figure=graphs["bar-top-5-companies"],
+                                    ), 
+                                    html.Div([   
+                                        dcc.Dropdown(id='cb-map-hierarchy',options=[
+                                                                        {'label':'Region','value':'region'},
+                                                                        {'label':'Department','value':'department'},
+                                                                        {'label':'City','value':'city'}
+                                                                    ],
+                                                    value="region"
+                                                    ),
+                                        dcc.Graph(
+                                            id="map-offers",
+                                            figure=graphs["map-offers"]
+                                        ) 
+                                    ]) 
+                                ],style={'width':'100%'})  
                         ]
                     ,style={"display":"flex"})
             ]
@@ -164,7 +171,7 @@ def getFilterQuery(url,websites,contract_types,companies,years):
     Output('bar-website','figure'),
     Output('pie-contract-type','figure'),
     Output('bar-top-5-companies','figure'),
-    # Output('map-offers','figure'),   
+    Output('map-offers','figure',allow_duplicate=True),   
     Input('btn-filter','n_clicks'),
     State('cb-website','value'),
     State('cb-contract-type','value'),
@@ -182,9 +189,8 @@ def filter(n_clicks,websites,contract_types,companies,years):
         if response.status_code == 200:
             cube = pd.DataFrame.from_records(json.loads(response.json()))
             if cube.shape[0]>0:
-                graphs = generateDashboard(cube)
-                return graphs["bar-website"],graphs["pie-contract-type"],graphs["bar-top-5-companies"]
-            # ,graphs["map-offers"]
+                graphs = generateDashboard(cube,'region')
+                return graphs["bar-website"],graphs["pie-contract-type"],graphs["bar-top-5-companies"],graphs["map-offers"]
             else:
                 return px.bar(
                     title='No data available',
@@ -201,8 +207,8 @@ def filter(n_clicks,websites,contract_types,companies,years):
 
     # Return an empty figure or None if conditions are not met
     if cube.shape[0]>0:
-        graphs = generateDashboard(cube)
-        return graphs["bar-website"],graphs["pie-contract-type"],graphs["bar-top-5-companies"]
+        graphs = generateDashboard(cube,'region')
+        return graphs["bar-website"],graphs["pie-contract-type"],graphs["bar-top-5-companies"],graphs["map-offers"]
     # ,graphs["map-offers"]
     else:
         return px.bar(
@@ -216,3 +222,38 @@ def filter(n_clicks,websites,contract_types,companies,years):
             labels={'y': 'Company', 'x': 'Counts'},
             orientation="h"
         )
+    
+@app.callback( 
+    Output('map-offers','figure',allow_duplicate=True),
+    Input('cb-map-hierarchy','value'),
+    State('cb-website','value'),
+    State('cb-contract-type','value'),
+    State('cb-company','value'),
+    State('cb-year','value')
+)   
+def mapDrillDownOrRollUp(hierarchy,websites,contract_types,companies,years):
+    if hierarchy:
+        url = "http://db_api:5002/get/offers?criterias="
+
+        fullUrl = getFilterQuery(url,websites,contract_types,companies,years)
+
+        response = requests.get(fullUrl)
+
+        if response.status_code == 200:
+            cube = pd.DataFrame.from_records(json.loads(response.json()))
+            if cube.shape[0]>0:
+                return generateDashboard(cube,hierarchy)["map-offers"]
+            else:
+                return px.bar(
+                    title='No data available',
+                    labels={'y': 'Company', 'x': 'Counts'},
+                    orientation="h"
+                )
+    if cube.shape[0]>0:
+        return generateDashboard(cube,hierarchy)["map-offers"]
+    else:
+        return px.bar(
+                    title='No data available',
+                    labels={'y': 'Company', 'x': 'Counts'},
+                    orientation="h"
+                )

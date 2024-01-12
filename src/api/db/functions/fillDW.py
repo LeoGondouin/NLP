@@ -42,20 +42,8 @@ def fillDW(corpus):
         position = DPosition(position=corpus_position)
         website = DWebsite(website=corpus_website,link=corpus_link)
         company = DCompany(company=corpus_company)
-        location_infos = getLocationInfos(corpus_city)
-        if location_infos is not None:
-            city = DLocation(
-                city=location_infos["city"]["name"],
-                city_coords=location_infos["city"]["coordinates"],
-                department=location_infos["department"]["name"],
-                department_coords=location_infos["department"]["coordinates"],
-                region=location_infos["region"]["name"],
-                region_coords=location_infos["region"]["coordinates"]
-            )
-        else:
-            city = DLocation(
-                city=corpus_city
-            )
+        # location_infos = getLocationInfos(corpus_city)
+        city = DCity(city=corpus_city)
         contract_type = DContractType(contract_type=corpus_contract_type)
         session = Session()
 
@@ -64,7 +52,7 @@ def fillDW(corpus):
         existing_position = session.query(DPosition).filter_by(position=corpus_position).first()
         existing_website = session.query(DWebsite).filter_by(website=corpus_website).first()
         existing_company = session.query(DCompany).filter_by(company=corpus_company).first()
-        existing_city = session.query(DLocation).filter_by(city=corpus_city).first()
+        existing_city = session.query(DCity).filter_by(city=corpus_city).first()
         existing_contract_type = session.query(DContractType).filter_by(contract_type=corpus_contract_type).first()
 
         #Si elle existe je récupère la ligne existante, sinon j'insert la nouvelle ligne

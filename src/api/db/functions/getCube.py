@@ -1,5 +1,5 @@
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine,text
+from sqlalchemy.orm import sessionmaker, aliased
+from sqlalchemy import create_engine, text, and_
 from models import *
 import pandas as pd
 import json
@@ -18,6 +18,7 @@ def getCube(filter_criterias):
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     session = Session()
+
     joined_data = (
         session.query(
             FJobAdvertisements.nb_occurences,
@@ -25,22 +26,27 @@ def getCube(filter_criterias):
             DPosition.position,
             DWebsite.website,
             DWebsite.link,
-            DLocation.city,
-            DLocation.city_coords,
+            HLocation.city,
+            HLocation.department,
+            HLocation.region,
+            HLocation.latitude,
+            HLocation.longitude,
             DCompany.company,
             DCalendar.date,
             DCalendar.day,
             DCalendar.month,
             DCalendar.year
         )
+        .select_from(FJobAdvertisements)
         .join(DContractType)
         .join(DPosition)
         .join(DWebsite)
-        .join(DLocation)
+        .join(DCity)
         .join(DCompany)
         .join(DCalendar)      
         .filter(
-            text(filter_criterias)
+            text(filter_criterias),
+            HLocation.city==DCity.city
         )
         .all()
     )
@@ -52,16 +58,19 @@ def getCube(filter_criterias):
             'position': row.position,
             'website': row.website,
             'link': row.link,
-            'city': row.city.lower().capitalize(),
+            'city': row.city.capitalize(),
+            'department':  row.department.capitalize() if row.department else None,
+            'region': row.region.capitalize() if row.region else None,
             'company': row.company,
             'published_date': row.date,
             'published_day': row.day,
             'published_month_int': row.month,
             'published_month': calendar.month_name[row.month],
             'published_year': row.year,
-            'coords': row.city_coords,
+            'latitude': row.latitude,
+            'longitude': row.longitude
         }
         for row in joined_data
     ])
-    cube = json.dumps(cube.to_dict(orient="records"),default=serialize_dates)
+    cube = json.dumps(cube.to_dict(orient="records"), default=serialize_dates)
     return cube

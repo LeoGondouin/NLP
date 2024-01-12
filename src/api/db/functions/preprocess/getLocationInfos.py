@@ -4,11 +4,9 @@ from geopy.geocoders import Nominatim
 
 def getLocationInfos(city):
     geolocator = Nominatim(user_agent="city_mapper")
-
+    print(city.capitalize())
     try:
         location = geolocator.geocode(city.capitalize(), language='fr')
-        print(city.capitalize())
-
         if location:
             if city.lower() == "paris":
                 department = "Paris"
@@ -31,16 +29,18 @@ def getLocationInfos(city):
 
                 region = reverse_location.raw.get('address', {}).get('state')
                 region_location = geolocator.geocode(f"{region}, France")
-
-                department_coords = {
-                    "latitude": department_location.latitude,
-                    "longitude": department_location.longitude
-                }
-
-                region_coords = {
-                    "latitude": region_location.latitude,
-                    "longitude": region_location.longitude
-                }
+                
+                if department_location is not None and region_location is not None:
+                    department_coords = {
+                        "latitude": department_location.latitude,
+                        "longitude": department_location.longitude
+                    }
+                    region_coords = {
+                        "latitude": region_location.latitude,
+                        "longitude": region_location.longitude
+                    }
+                else:
+                    return None
 
             city_coords = {
                 "latitude": location.latitude,
