@@ -26,4 +26,4 @@ def cleanCity(workplace):
     # Split by '·' and take the first part
     workplace = workplace.split('·')[0]
 
-    return workplace.strip()
+    return workplace.strip().capitalize()

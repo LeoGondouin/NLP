@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from functions.preprocess.cleanCity import cleanCity
-from functions.preprocess.getLocationInfos import getLocationInfos
+from functions.preprocess.cleanContractType import cleanContractType
 import pandas as pd
 
 #Alimentation du DW
@@ -26,7 +26,7 @@ def fillDW(corpus):
         corpus_link = item["link"]
         corpus_company = item["company"]
         corpus_city = cleanCity(item["workplace"])
-        corpus_contract_type = item["contract_type"]
+        corpus_contract_type = cleanContractType(item["contract_type"])
         corpus_published_date = item['published_date']
         corpus_nb_occurence = item['description']
         try:

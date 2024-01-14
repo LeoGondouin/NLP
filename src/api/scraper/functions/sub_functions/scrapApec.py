@@ -9,7 +9,6 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from functions.preprocess.getCleanText import getCleanText
 from functions.preprocess.getOccurences import getOccurences
-from functions.preprocess.getOccurences import getOccurences
 
 def scrapApec(keywords,nb_docs):
         pages = math.ceil(nb_docs/20)

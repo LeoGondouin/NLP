@@ -6,7 +6,7 @@ website_options = [
     {'label': 'Apec', 'value': 'apec'},
     {'label': 'Emploi territorial', 'value': 'emploi-territorial'},
     {'label': 'HelloWork', 'value': 'hellowork'},
-    {'label': 'Pôle Emploi', 'value': 'pole-emploi'},
+    # {'label': 'Pôle Emploi', 'value': 'pole-emploi'},
     {'label': 'Welcome to the Jungle', 'value': 'welcometothejungle'},
 ]
 

@@ -27,11 +27,11 @@ DELIMITER $$
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pTruncateDW` ()   BEGIN
     	DELETE FROM f_job_advertisements;
-        DELETE FROM d_website;
-        DELETE FROM d_position;
-   		DELETE FROM d_company;
-        DELETE FROM d_city;
-        DELETE FROM d_contract_type;
+      DELETE FROM d_website;
+      DELETE FROM d_position;
+      DELETE FROM d_company;
+      DELETE FROM d_city;
+      DELETE FROM d_contract_type;
     END$$
 
 DELIMITER ;

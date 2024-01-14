@@ -6,8 +6,12 @@
     width:20%;
     text-align: center;
 }
+.kpi{
+    padding-left:30px;
+    font-size:22px;
+}
 .menu-opt{
-    cursor:pointer
+    cursor:pointer;
 }
 .menu-opt:hover{
     color:whitesmoke;

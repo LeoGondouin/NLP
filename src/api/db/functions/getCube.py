@@ -36,18 +36,17 @@ def getCube(filter_criterias):
             DCalendar.day,
             DCalendar.month,
             DCalendar.year
-        )
-        .select_from(FJobAdvertisements)
-        .join(DContractType)
+        ).join(DContractType)
         .join(DPosition)
         .join(DWebsite)
         .join(DCity)
         .join(DCompany)
-        .join(DCalendar)      
+        .join(DCalendar)
+        .join(HLocation,HLocation.city==DCity.city)
         .filter(
-            text(filter_criterias),
-            HLocation.city==DCity.city
-        )
+                text(filter_criterias)
+        ).
+        distinct()
         .all()
     )
 
@@ -72,5 +71,7 @@ def getCube(filter_criterias):
         }
         for row in joined_data
     ])
+    print(cube.shape[0])
     cube = json.dumps(cube.to_dict(orient="records"), default=serialize_dates)
+
     return cube

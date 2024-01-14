@@ -5,3 +5,6 @@ dash-renderer
 dash-table
 numpy
 pandas
+matplotlib
+wordcloud
+kaleido

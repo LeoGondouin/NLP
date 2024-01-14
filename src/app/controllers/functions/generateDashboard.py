@@ -1,12 +1,52 @@
 import plotly.express as px
 import json
 import pandas as pd
+from dash import html
 
 def generateDashboard(cube,mapLevel):
     website_prop = cube['website'].value_counts()
     contract_type_prop = cube['contract_type'].value_counts()   
     company_prop = cube['company'].value_counts().sort_values(ascending=False).head(5)
 
+    kpis = [
+        html.Span(children=[
+                        html.Label(
+                            children=str(len(company_prop.index)),
+                            style={"font-weight":"bold"}
+                        ),
+                        " distinct count of companies"
+                    ]
+                    ,style={"padding-left":"30px","font-size":"22px"}
+                ),
+        html.Span(children=[
+                        html.Label(
+                            children=str(cube.shape[0]),
+                            style={"font-weight":"bold"}
+                        ),
+                        " number of scrapped offers"
+                    ]
+                    ,style={"padding-left":"30px","font-size":"22px"}
+                ),
+        html.Span(children=[
+                        html.Label(
+                            children=str(len(website_prop.index)),
+                            style={"font-weight":"bold"}
+                        ),
+                        " distinct websites count"
+                    ]
+                    ,style={"padding-left":"30px","font-size":"22px"}
+                ),
+        html.Span(children=[
+                        html.Label(
+                            children=str(len(cube[mapLevel].unique())),
+                            style={"font-weight":"bold"}
+                        ),
+                        f" distinct {mapLevel.capitalize()} count"
+                    ]
+                    ,style={"padding-left":"30px","font-size":"22px"}
+                )
+    ]
+    
     sub_cube = cube[~cube.isnull().any(axis=1)]
     sub_cube['latitude'] = pd.Series([item for item in sub_cube['latitude']])
     sub_cube['longitude'] = pd.Series([item for item in sub_cube['longitude']])
@@ -44,6 +84,7 @@ def generateDashboard(cube,mapLevel):
         )
     )
     return {
+        "kpis":kpis,
         "bar-website":
         px.bar(
             x=website_prop.index,

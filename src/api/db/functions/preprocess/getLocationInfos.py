@@ -4,7 +4,7 @@ from geopy.geocoders import Nominatim
 
 def getLocationInfos(city):
     geolocator = Nominatim(user_agent="city_mapper")
-    print(city.capitalize())
+
     try:
         location = geolocator.geocode(city.capitalize(), language='fr')
         if location:
