@@ -38,6 +38,7 @@ def simulate_delay(callback):
 
 @app.callback(
     Output('span-preview', 'children',allow_duplicate=True),
+    Output('span-preview', 'style',allow_duplicate=True),
     State('txt-keyword','value'),
     State('cb-nbdocs','value'),
     State('cb-website','value'),
@@ -82,14 +83,16 @@ def scrapOutput(keywords, nbDocs, websites, n_clicks):
             isInserted = False
 
         strResponse = ""
+        color="red"
         if not(isScrapped):
             strResponse = "ERROR : Job scrapping failed"
         elif not(isInserted):
             strResponse = "ERROR : Corpus saving failed"
         else:
             strResponse = "SUCCESS : Corpus saved !"
+            color="green"
             
-        return strResponse
+        return strResponse,{'color':color}
         
         
 

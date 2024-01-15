@@ -71,7 +71,7 @@ def getCube(filter_criterias):
         }
         for row in joined_data
     ])
-    print(cube.shape[0])
+
     cube = json.dumps(cube.to_dict(orient="records"), default=serialize_dates)
 
     return cube

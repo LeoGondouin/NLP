@@ -7,6 +7,7 @@ app.css.append_css({"external_url": "https://stackpath.bootstrapcdn.com/bootstra
 # Include layout
 app.layout = main_layout
 app.config.prevent_initial_callbacks = 'initial_duplicate'
+app.config['suppress_callback_exceptions'] = True
 # Include callbacks (Needs to be assigned after setting layout up)
 from callbacks.main import *
 

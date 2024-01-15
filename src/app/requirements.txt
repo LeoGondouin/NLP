@@ -8,3 +8,5 @@ pandas
 matplotlib
 wordcloud
 kaleido
+gensim
+scikit-learn
