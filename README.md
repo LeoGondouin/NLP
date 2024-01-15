@@ -34,7 +34,7 @@ Une fois la sélection faite, vous pouvez appuyer sur le bouton scrap data pour 
 
 ### Descriptive statistics
 
-Dans la sous section Dashboard nous réalison l'analyse basique des offres. De plus dans cette section nous avons la possibiliter d'appliquer plusieur filtre a cette analyse comme on peut le voir sur les images ci-dessous
+Dans la sous section Dashboard nous réalisons l'analyse basique des offres. De plus dans cette section nous avons la possibiliter d'appliquer plusieur filtre a cette analyse comme on peut le voir sur les images ci-dessous
 
 ![Descriptive_statistics1](img/Descriptive_statistics1.png)
 
@@ -48,12 +48,17 @@ Nous réalisons 3 analyses:
 - Tout dabord un word cloud:
 ![word](img/word.png)
 
-- Ensuite une recherche des technologie les plus recherché:
+- Ensuite une recherche des technologies les plus recherchées:
 ![tec](img/techno.png)
 
-- Pour finir une recherche des mot les plus "tendence"
+- Pour finir une recherche des mots les plus "tendences"
 
 ![freq](img/freq.png)
 
 
+### Topic analysis
+
+Dans cette partie nous avons centrer l'étude sur le clusturing des offres en laissant le choix a l'utilisateur de jouer sur les hyper paramètres de l'étude.
+
+![ta](img/last.png)
 
